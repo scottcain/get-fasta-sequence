@@ -96,7 +96,7 @@ function App() {
                rows="10"
                cols="30">
         </textarea>
-        <p>Locations should look like "II:300..500"</p>
+        <p>Locations should look like "II:300..500"; this form is limited to a little less than 500kb at a time.</p>
         <button label="getSequences" onClick={handleGetSequences} >
            get sequences
         </button>
