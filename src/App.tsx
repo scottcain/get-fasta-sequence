@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 //import './App.css'
 
 import { RemoteFile } from 'generic-filehandle'
-import Sequences from "./components/Sequences";
+//import Sequences from "./components/Sequences";
 import { accessFasta } from "./accessFasta";
 import Select from 'react-select';
 import {Buffer} from 'buffer';
@@ -13,10 +13,9 @@ function App() {
   // using useState for the text area causes it to fire for every keystroke
   //const [locations, setLocations] = useState('II:1..100\nV:100000..110000');
   var initialLocations = '';
-  const ref = useRef(null);
   const [locations, setLocations] = useState(initialLocations);
   const [assembly,  setAssembly]  = useState('c_elegans.PRJNA13758');
-  const [result,    setResult]    = useState('');
+  const [result,    setResult]    = useState<{fasta:string}>();
   const [error,     setError]     = useState('');
   const options = [
     { value: 'c_elegans.PRJNA13758', label: 'c_elegans N2' },
@@ -53,33 +52,31 @@ function App() {
   ];
 
   const handleAssembly = (selectedAssembly) => {
-    setAssembly(selectedAssembly);
+    if (selectedAssembly?.value) {
+      setAssembly(selectedAssembly.value);
+    }
   }
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const ass = typeof assembly.value === 'undefined' ? 'c_elegans.PRJNA13758' : assembly.value
-        const fastaurl = 'https://s3.amazonaws.com/wormbase-modencode/fasta/current/' + ass + '.WS284.genomic.fa.gz';
-        const res = await accessFasta(
-          fastaurl,
-          locations,  
-        );
-        setResult(res);
-      } catch (e) {
-        console.error(e);
-        setError(e);
-      }
-    })();
-  }, [
-    locations,
-    assembly
-  ]);
+  function handleLocationChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    setLocations(event.target.value)
+  }
+
+  async function handleGetSequences() {
+    try {
+      const fastaurl = 'https://s3.amazonaws.com/wormbase-modencode/fasta/current/' + assembly + '.WS284.genomic.fa.gz';
+      const res = await accessFasta(
+        fastaurl,
+        locations,
+      );
+      setResult(res);
+    } catch (e) {
+      console.error(e);
+      setError(e);
+    }
+  }
 
   if (error) {
     return <div style={{ color: "red" }}>{`${error}`}</div>;
-  } else if (!result) {
-    return <div>Loading...</div>;
   } else {
     return (
     <>
@@ -89,24 +86,24 @@ function App() {
           <Select onChange={handleAssembly}
             name='assembly'
             options={options}
-            defaultOption={options[0]}
+            defaultValue={options[0]}
           />
         <p>Locations: </p>
-        <textarea 
-               ref={ref}
-               name="locs" 
+        <textarea
+               onChange={handleLocationChange}
+               name="locs"
                defaultValue={locations}
-               rows="10" 
+               rows="10"
                cols="30">
         </textarea>
         <p>Locations should look like "II:300..500"</p>
-        <button label="getSequences" onClick={() => {setLocations(ref.current.value)}} >
+        <button label="getSequences" onClick={handleGetSequences} >
            get sequences
         </button>
 
-        <textarea id="results" cols="70" rows="20" defaultValue={result.fasta}>
+        <textarea id="results" cols="70" rows="20" value={result?.fasta} readOnly>
         </textarea>
-        
+
       </div>
     </>
     )
@@ -114,3 +111,4 @@ function App() {
 }
 
 export default App
+
