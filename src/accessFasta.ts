@@ -24,6 +24,7 @@ export async function accessFasta(
 
   let results='';
   for (const row of locs) {
+    if (row.length == 0) {break}
     const tmp = row.split(":");
     const refseq = tmp[0];
     const tmp2 = tmp[1].split("..");

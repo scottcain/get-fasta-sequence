@@ -12,7 +12,7 @@ window.Buffer = Buffer
 function App() {
   // using useState for the text area causes it to fire for every keystroke
   //const [locations, setLocations] = useState('II:1..100\nV:100000..110000');
-  var initialLocations = 'II:1..100\nV:100000..101000';
+  var initialLocations = '';
   const ref = useRef(null);
   const [locations, setLocations] = useState(initialLocations);
   const [assembly,  setAssembly]  = useState('c_elegans.PRJNA13758');
@@ -91,7 +91,7 @@ function App() {
             options={options}
             defaultOption={options[0]}
           />
-        
+        <p>Locations: </p>
         <textarea 
                ref={ref}
                name="locs" 
@@ -99,12 +99,12 @@ function App() {
                rows="10" 
                cols="30">
         </textarea>
-      
+        <p>Locations should look like "II:300..500"</p>
         <button label="getSequences" onClick={() => {setLocations(ref.current.value)}} >
            get sequences
         </button>
 
-        <textarea id="results" cols="70" rows="40" defaultValue={result.fasta}>
+        <textarea id="results" cols="70" rows="20" defaultValue={result.fasta}>
         </textarea>
         
       </div>
