@@ -20,8 +20,6 @@ export async function accessFasta(
 
   const locs = locations.split("\n");
 
-  console.log(locs);
-
   let results='';
   for (const row of locs) {
     if (row.length == 0) {break}
