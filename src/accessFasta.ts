@@ -31,10 +31,6 @@ export async function accessFasta(
     const start = tmp2[0]-1; //interbase coords, right?
     const end = tmp2[1];
 
-    console.log(refseq);
-    console.log(start);
-    console.log(end);
-
     const seq = await t.getResiduesByName(refseq, start, end);
 
     const fasta = ">" +row+ "\n" +seq+ "\n";

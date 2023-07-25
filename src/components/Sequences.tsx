@@ -16,8 +16,6 @@ export default function Sequences({
 
   const sequence = '';
 
-  //console.log(locations);
-
   useEffect(() => {
     (async () => {
       try {
@@ -27,7 +25,6 @@ export default function Sequences({
         );
         setResult(res);
       } catch (e) {
-        console.error(e);
         setError(e);
       }
     })();
