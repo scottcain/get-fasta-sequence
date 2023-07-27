@@ -17,19 +17,16 @@ export async function accessFasta(
     chunkSizeLimit: 500000,
   });
 
+
   function chunkFasta (seq, len) {
-    const size = Math.ceil(seq.length/len)
-    const r = Array(size)
-    let offset = 0
+    let formatted = '';
 
-    for (let i = 0; i < size; i++) {
-      r[i] = seq.substr(offset, len)
-      offset += len
+    for (let i = 0; i < seq.length; i+=len) {
+      formatted += seq.slice(i, i+len)+'\n'
     }
-    const formatted = r.join("\n");
-
     return formatted;
   }
+
 
   const locs = locations.split("\n");
 
@@ -44,7 +41,7 @@ export async function accessFasta(
 
     const seq = await t.getResiduesByName(refseq, start, end);
 
-    const format = chunkFasta(seq, 70);
+    const format = chunkFasta(seq, 70); 
 
     const fasta = ">" +row+ "\n" +format+ "\n";
 
